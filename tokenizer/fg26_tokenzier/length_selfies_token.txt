@@ -1,0 +1,1 @@
+max length of selfies token with special tokens: 66, min length of selfies token: 1

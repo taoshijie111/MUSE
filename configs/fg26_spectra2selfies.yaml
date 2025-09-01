@@ -1,0 +1,163 @@
+seed: 42
+logger:
+  name: Spectra2Selfies
+  prefix: 'FG26-SR-1-IR10-ViT-BERT'
+
+random_split: False
+train_test_split: 0.9
+pretrain: 
+tokenizer_path: tokenizer/fg26_tokenzier
+
+dataset:
+  root_data: 'dataset/train_test_split_no_chiral'
+  name: 'fg26_{}_spectra.npz'
+  molecule_weight: False
+  spec_type: ['ir', ]  #  'ir', 'raman', 'uv', 'xas', 'nmr' 'broad-nmr-h', 'broad-nmr-c'
+  interp_num: 4000
+
+train_dataset:
+  root_data: 'dataset/train_test_split_no_chiral'
+  name: 'train_fg26_{}_spectra.npz'
+  molecule_weight: False
+  spec_type: ['ir',]  #  'raman', 'uv', 'xas', 'nmr'
+  interp_num: 4000
+
+test_dataset:
+  root_data: 'dataset/train_test_split_no_chiral'
+  name: 'test_fg26_{}_spectra.npz'
+  molecule_weight: False
+  spec_type: ['ir', ] 
+  interp_num: 4000
+
+spectrum_pipline:
+  base_spectrum_pipline:
+    # augment1:
+    #   module: src.augmentation
+    #   cls: SpectrumShift
+    #   args:
+    #     shift: 10
+    # augment2:
+    #   module: src.augmentation
+    #   cls: SpectrumScale
+    #   args:
+    #     scale: 0.005
+
+  ir_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+
+  raman_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+
+  uv_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+      args:
+        mean_area: 12655901.29954236
+
+  xas-c_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+      args:
+        mean_area: 6568730.235306196
+
+  xas-n_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+      args:
+        mean_area: 1585335.345864746
+
+  xas-o_pipline:
+    augment1:
+      module: src.augmentation
+      cls: NormalizeByArea
+      args:
+        mean_area: 1216866.151672603
+
+smiles_pipline:
+  augment1:
+      module: src.augmentation
+      cls: RemoveSmilesChirality
+
+  augment2:
+      module: src.augmentation
+      cls: SmilesRandom
+      args:
+        prop: 0
+        random_type: unrestricted
+
+
+model:
+  spec_type: ['ir', ]
+  specific_tokenizer: False # if ture, 'nmr' or molecule_wight or other specific spectra must be given.
+  add_spec_type_token: False
+  post_embedding: True # if False, embedding_model_config is not used
+  interp_num: 4000
+
+  pre_embedding_model_config:
+    name: 'vit' # linear or vit or cnn
+    args:
+      patch_sizes: [10, ] # 125 for cnn, 10 for linear
+      hidden_size: 640 # only for linear model
+      output_size: 768  # must be // 3
+  
+  embedding_model_config:
+    name: bert 
+    args:
+      hidden_size: 768
+      num_hidden_layers: 2
+      intermediate_size: 1024
+      num_attention_heads: 8
+      position_embedding_type: absolute
+      max_position_embeddings: 512
+    
+  llm_model_config:
+    name: 'bart'
+    args:
+      encoder_layers: 6
+      decoder_layers: 6
+      encoder_attention_heads: 8
+      decoder_attention_heads: 8
+      decoder_ffn_dim: 3072
+      encoder_ffn_dim: 3072
+      activation_function: gelu
+      d_model: 768
+      dropout: 0.0
+      max_position_embeddings: 2400
+      forced_eos_token_id: 2
+
+optimizer:
+  lr: 0.0001
+  betas: [0.9, 0.999]
+  weight_decay: 0.001
+
+scheduler:
+  warmup: 0.02
+
+trainer:
+  batch_size: 128
+  test_rate: 4
+  epochs: 100
+  patience: 20
+  val_interval: 10
+  gpu_num: 1
+  mixed_precision: 'fp16'
+  gradient_accumulation_steps: 1
+  find_unused_parameters: True
+  cpu: False
+
+  monitor: val_top1_accuracy
+  mode: max
+  plot: True
+
+callbacks:
+  EpochCheckpoint:
+    save_freq: 5
+    max_ckpt: 1
+
