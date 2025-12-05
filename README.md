@@ -32,7 +32,7 @@ conda activate Spec2Mol
 ```
 
 ### Dataset and Model Weights
-Download the required datasets and place them in the `dataset/` folder. Pre-trained model weights should be placed in the `logs/` folder. The repository includes two pre-trained models:
+Download the required datasets and place them in the `dataset/` folder. Pre-trained model weights should be placed in the `logs/` folder. You may download the USTC-FG26 multimodal spectral dataset (~240k molecules) from: https://huggingface.co/datasets/csllpr/USTC-FG26. We also provide two pre-trained MUSE / S2M models available at: https://huggingface.co/csllpr/ms2m. For example, the repository currently includes the following pre-trained configurations:
 - `FG26-SR-1-IR10-NMR50-ViT-BERT_Spectra2Selfies_2025-03-27_17-14/` (IR + NMR)
 - `FG26-SR-1-Raman10-XAS10-ViT-BERT_Spectra2Selfies_2025-03-27_17-11/` (Raman + XAS)
 
