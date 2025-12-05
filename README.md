@@ -1,10 +1,12 @@
-# Multimodal Spectroscopy-Guided AI Generation of Molecules with Tailored Properties
+# Generation of Tailorable Multi-Property Molecules via Multimodal Spectral Fusion Evolution
 
-This repository contains the implementation of the paper "Multimodal Spectroscopy-Guided AI Generation of Molecules with Tailored Properties". The work presents a novel approach for generating molecules with specific properties by leveraging multiple spectroscopic techniques as guidance.
+This repository contains the implementation of the paper "Generation of Tailorable Multi-Property Molecules via Multimodal Spectral Fusion Evolution", introducing MUltimodal Spectral fusion Evolution (MUSE)—a spectroscopy-guided generative framework that unifies multimodal spectroscopic descriptors as a universal chemical language for multi-property molecular creation.
 
 ## Overview
 
-The framework combines multi-modal spectroscopic data (IR, Raman, UV, XAS, NMR) with transformer-based architectures to generate molecular structures with desired properties. The model uses SELFIES (Self-Referencing Embedded Strings) representation for guaranteed chemical validity and employs a BART-based sequence generation architecture.
+MUSE integrates IR, Raman, UV–Vis, XAS, and NMR spectra through a BART-based Spectra-to-Molecules (S2M) module using SELFIES for chemically valid structure generation. By leveraging spectral fusion evolution, the framework enables highly efficient multi-objective molecular discovery driven by comprehensive structural, vibrational, and electronic information.
+
+We additionally constructed USTC-FG26, a large-scale multimodal spectral dataset of ~240,000 molecules covering 26 common functional groups, with high-quality DFT-computed IR, Raman, NMR, UV–Vis, and XAS data, publicly released here: https://huggingface.co/datasets/csllpr/USTC-FG26
 
 ## Architecture
 
